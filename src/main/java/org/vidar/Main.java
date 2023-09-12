@@ -3,9 +3,8 @@ package org.vidar;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.expr.Name;
 import org.vidar.utils.FileUtil;
-import org.vidar.utils.RandomStrUtil;
+import org.vidar.utils.NameUtils;
 import org.vidar.utils.TransformUtil;
 import org.vidar.visitor.ClzNameChangeVisitor;
 import org.vidar.visitor.ClzRefChangeVisitor;
@@ -30,7 +29,8 @@ public class Main {
                     String oldClzName = TransformUtil.getClzNameByFile(file);
                     String oldPkgName = cu.getPackageDeclaration().orElse(new PackageDeclaration()).getNameAsString();
                     // 擦去类名
-                    String newClzName = RandomStrUtil.genRandomClzName();
+                    // 指定唯一包名，生成全局唯一className,TODO 改善
+                    String newClzName = NameUtils.generateClassName("1ue");
                     cu.accept(new ClzNameChangeVisitor(), newClzName);
                     String path = file.getParent();
                     FileUtil.saveModifiedFile(cu, new File( path + "/" + newClzName + ".java"));
