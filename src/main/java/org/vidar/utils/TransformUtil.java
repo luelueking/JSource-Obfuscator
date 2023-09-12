@@ -2,6 +2,7 @@ package org.vidar.utils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,4 +26,10 @@ public class TransformUtil {
         return extensionIndex == -1 ? filename : filename.substring(0, extensionIndex);
     }
 
+    public static String getMethodSignature(MethodDeclaration m) {
+        String methodName = m.getNameAsString();
+        String returnType = m.getType().toString();
+        String parameters = m.getParameters().toString();
+        return methodName + "/" + returnType + "/" + parameters;
+    }
 }
