@@ -9,6 +9,10 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
+import com.github.javaparser.printer.Printer;
+import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
@@ -21,6 +25,7 @@ import org.vidar.visitor.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -84,12 +89,8 @@ public class Main {
                     for (VariableDeclarator var : vars) {
                         String oldVarName = var.getNameAsString();
                         String newVarName = NameUtils.generateFieldName(newClzName);
-                        cu.accept(new FieldNameChangeVisitor(),new String[]{oldVarName,newVarName});
+                        cu.accept(new FieldNameChangeVisitor(), new String[]{oldVarName, newVarName});
                     }
-
-
-
-
 
                     String path = file.getParent();
                     FileUtil.saveModifiedFile(cu, new File(path + "/" + newClzName + ".java"));
@@ -101,10 +102,26 @@ public class Main {
                     e.printStackTrace();
                 }
             });
+
+
+            Files.walk(Paths.get("/Users/zhchen/Downloads/obf-test/src/main/java/")).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
+                File file = p.toFile();
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(file);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                CompilationUnit cu = javaParser.parse(fis).getResult().get();
+                cu.accept(new StringEncryptVisitor(),null);
+                FileUtil.saveModifiedFile(cu,file);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+
+
+}
 
 
     private static void changeUsage(String oldPkgName, String newPkgName, String oldClzName, String newClzName) {

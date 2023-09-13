@@ -1,10 +1,7 @@
 package org.vidar.visitor;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
@@ -18,6 +15,27 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MethodNameChangeVisitor extends VoidVisitorAdapter<String[]> {
+
+    @Override
+    public void visit(ConstructorDeclaration cd,String[] arg) {
+        for (Parameter parameter : cd.getParameters()) {
+            String oldName = parameter.getName().getIdentifier();
+            String newName = NameUtils.generateLocalVariableName();
+            // 修改参数名称
+            parameter.setName(newName);
+
+            // 遍历方法内的语句
+            for (Statement statement : cd.getBody().getStatements()) {
+                statement.findAll(NameExpr.class).forEach(nameExpr -> {
+                    if (nameExpr.getNameAsString().equals(oldName)) {
+                        // 修改使用到参数的地方的名称
+                        nameExpr.setName(newName);
+                    }
+                });
+            }
+        }
+    }
+
     @Override
     public void visit(MethodDeclaration md, String[] arg) {
 
