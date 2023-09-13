@@ -53,7 +53,7 @@ public class NameUtils {
         int id = packageMap.get(packageName);
         packageMap.put(packageName, id + 1);
 
-        return "C"+toIl(id);
+        return "L"+toIl(id);
     }
 
     /**

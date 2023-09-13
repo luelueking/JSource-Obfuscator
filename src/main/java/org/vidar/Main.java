@@ -6,7 +6,9 @@ import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
@@ -62,7 +64,7 @@ public class Main {
 
                     // 混淆方法名
                     MethodCollectorVisitor methodCollectorVisitor = new MethodCollectorVisitor();
-                    cu.accept(methodCollectorVisitor,null);
+                    cu.accept(methodCollectorVisitor, null);
                     // 1.收集所有方法名
                     List<MethodDeclaration> methods = methodCollectorVisitor.getMethods();
                     HashMap<String, String> methodNameMap = new HashMap<>();
@@ -70,14 +72,29 @@ public class Main {
                         String oldMethodName = m.getNameAsString();
                         // 新的方法名
                         String newMethodName = NameUtils.generateMethodName(newClzName, oldMethodName);
-                        methodNameMap.put(newClzName+"#"+oldMethodName,newMethodName);
-                        cu.accept(new MethodNameChangeVisitor(),new String[]{oldMethodName,newMethodName});
+                        methodNameMap.put(newClzName + "#" + oldMethodName, newMethodName);
+                        cu.accept(new MethodNameChangeVisitor(), new String[]{oldMethodName, newMethodName});
                     }
 
+                    // 混淆field
+                    FieldCollectorVisitor fieldCollectorVisitor = new FieldCollectorVisitor();
+                    cu.accept(fieldCollectorVisitor, null);
+                    // 1.收集所有field
+                    List<VariableDeclarator> vars = fieldCollectorVisitor.getVars();
+                    for (VariableDeclarator var : vars) {
+                        String oldVarName = var.getNameAsString();
+                        String newVarName = NameUtils.generateFieldName(newClzName);
+                        cu.accept(new FieldNameChangeVisitor(),new String[]{oldVarName,newVarName});
+                    }
+
+
+
+
+
                     String path = file.getParent();
-                    FileUtil.saveModifiedFile(cu, new File( path + "/" + newClzName + ".java"));
+                    FileUtil.saveModifiedFile(cu, new File(path + "/" + newClzName + ".java"));
                     FileUtil.deleteFile(file);
-                    changeUsage(oldPkgName,oldPkgName,oldClzName,newClzName);
+                    changeUsage(oldPkgName, oldPkgName, oldClzName, newClzName);
                     changeMethodUsage(methodNameMap);
 
                 } catch (IOException e) {
@@ -101,7 +118,7 @@ public class Main {
 //                    CompilationUnit cu = StaticJavaParser.parse(fis);
                     CompilationUnit cu = javaParser.parse(fis).getResult().get();
                     // 修改引用的类名
-                    cu.accept(new ClzRefChangeVisitor(), new String[] { oldClzName, newClzName });
+                    cu.accept(new ClzRefChangeVisitor(), new String[]{oldClzName, newClzName});
                     String oldImportName = oldPkgName + "." + oldClzName;
                     cu.addImport(newPkgName + "." + newClzName);
                     TransformUtil.deleteImport(cu, oldImportName);
@@ -118,7 +135,7 @@ public class Main {
     }
 
     // todo
-    private static void changeMethodUsage(Map<String,String> needChange) {
+    private static void changeMethodUsage(Map<String, String> needChange) {
         try {
             // 遍历目录中的所有Java文件
             Files.walk(Paths.get("/Users/zhchen/Downloads/obf-test/src/main/java/")).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -129,7 +146,7 @@ public class Main {
 //                    CompilationUnit cu = StaticJavaParser.parse(fis);
                     CompilationUnit cu = javaParser.parse(fis).getResult().get();
                     // 修改引用的方法
-                    cu.accept(new MethodRefChangeVisitor(),needChange);
+                    cu.accept(new MethodRefChangeVisitor(), needChange);
                     // 保存修改后的源代码
                     FileUtil.saveModifiedFile(cu, file);
                     fis.close();

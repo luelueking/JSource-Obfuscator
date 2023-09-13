@@ -29,8 +29,9 @@ public class MethodNameChangeVisitor extends VoidVisitorAdapter<String[]> {
             isInterface = clz.isInterface();
         }
 
+        boolean isMain = md.getNameAsString().equals("main");
 
-        if (!md.isNative() && !hasOverrideAnnotation && !isInterface) {
+        if (!md.isNative() && !hasOverrideAnnotation && !isInterface && !isMain) {
             if (md.getNameAsString().equals(arg[0])) {
                 md.setName(arg[1]);
             }
