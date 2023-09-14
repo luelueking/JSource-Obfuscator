@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry;
+package org.vidar.entity;
 
 import com.github.javaparser.ast.stmt.Statement;
 import org.apache.commons.lang3.ArrayUtils;
-import org.vidar.entry.operators.AbstractOperator;
+import org.vidar.entity.operators.AbstractOperator;
 
 public class Round {
     private final AbstractOperator operator;

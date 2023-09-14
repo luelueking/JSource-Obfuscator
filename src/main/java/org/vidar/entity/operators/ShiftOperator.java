@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry.operators;
+package org.vidar.entity.operators;
 
 import com.github.javaparser.ast.expr.*;
 

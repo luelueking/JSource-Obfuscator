@@ -16,21 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry.operators;
+package org.vidar.utils;
 
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import org.vidar.entry.Constant;
-import org.vidar.entry.Round;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
+import com.github.javaparser.ast.stmt.Statement;
 
-public class XorIndexOperator extends XorOperator {
-    @Override
-    public double getStrength() {
-        return 0.1D;
-    }
-
-    @Override
-    public Round makeRound(SimpleName variable, Constant... constants) {
-        return new Round(this, generateRound(variable, new NameExpr(constants[0].getVarName())), null);
+public class StatementUtil {
+    public static Statement findParentBlock(Node node) {
+        if (!node.getParentNode().isPresent() || node.getParentNode().get() instanceof NodeWithStatements) {
+            return (Statement) node;
+        }
+        return findParentBlock(node.getParentNode().get());
     }
 }

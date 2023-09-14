@@ -16,26 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry.operators;
+package org.vidar.entity.operators;
 
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.UnaryExpr;
+import org.vidar.entity.Constant;
+import org.vidar.entity.Round;
 
-public class NotOperator extends AbstractOperator {
+public class XorIndexOperator extends XorOperator {
     @Override
     public double getStrength() {
-        return 0.3D;
+        return 0.1D;
     }
 
     @Override
-    public int doRound(int value, int... constants) {
-        return ~value;
-    }
-
-    @Override
-    protected Expression generateExpr(SimpleName variable, Expression... constants) {
-        return new UnaryExpr(new NameExpr(variable), UnaryExpr.Operator.BITWISE_COMPLEMENT);
+    public Round makeRound(SimpleName variable, Constant... constants) {
+        return new Round(this, generateRound(variable, new NameExpr(constants[0].getVarName())), null);
     }
 }

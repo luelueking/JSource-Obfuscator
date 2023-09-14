@@ -26,17 +26,17 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.vidar.entry.Constant;
-import org.vidar.entry.Round;
-import org.vidar.entry.StringEntry;
-import org.vidar.entry.operators.*;
+import org.vidar.entity.Constant;
+import org.vidar.entity.Round;
+import org.vidar.entity.StringEntry;
+import org.vidar.entity.operators.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Encryptor {
+public class EncryptorUtil {
     private static final List<AbstractOperator> OPERATORS = new ArrayList<AbstractOperator>() {{
         add(new AddOperator());
         add(new SubOperator());
@@ -55,9 +55,9 @@ public class Encryptor {
 
     public static NodeList<Statement> makeDecryptor(StringEntry entry) {
         NodeList<Statement> resultStmts = new NodeList<>();
-        SimpleName dataVar = new SimpleName(NameUtils.generateLocalVariableName());
-        SimpleName indexVar = new SimpleName(NameUtils.generateLocalVariableName());
-        SimpleName roundValueVar = new SimpleName(NameUtils.generateLocalVariableName());
+        SimpleName dataVar = new SimpleName(NameUtil.generateLocalVariableName());
+        SimpleName indexVar = new SimpleName(NameUtil.generateLocalVariableName());
+        SimpleName roundValueVar = new SimpleName(NameUtil.generateLocalVariableName());
 
         // Create variable for result string
         resultStmts.add(new ExpressionStmt(new VariableDeclarationExpr(new VariableDeclarator(

@@ -16,34 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry;
+package org.vidar.entity.operators;
 
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import org.vidar.utils.NameUtils;
+import org.vidar.entity.Constant;
+import org.vidar.entity.Round;
 
-
-public class StringEntry {
-    private final SimpleName varName;
-    private String rawString;
-
-    public StringEntry(String rawString) {
-        this(new SimpleName(NameUtils.generateLocalVariableName()), rawString);
+public class SubIndexOperator extends SubOperator {
+    @Override
+    public double getStrength() {
+        return 0.1D;
     }
 
-    public StringEntry(SimpleName varName, String rawString) {
-        this.varName = varName;
-        this.rawString = rawString;
-    }
-
-    public SimpleName getVarName() {
-        return varName;
-    }
-
-    public String getRawString() {
-        return rawString;
-    }
-
-    public void setRawString(String rawString) {
-        this.rawString = rawString;
+    @Override
+    public Round makeRound(SimpleName variable, Constant... constants) {
+        return new Round(this, generateRound(variable, new NameExpr(constants[0].getVarName())), null);
     }
 }

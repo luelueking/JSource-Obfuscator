@@ -6,10 +6,9 @@ import com.github.javaparser.printer.Printer;
 import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
 import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 public class FileUtil {
 
@@ -28,6 +27,17 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static FileInputStream getFileInputStream(Path path) {
+        File file = path.toFile();
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return fis;
     }
 
     public static void deleteFile(File file) {

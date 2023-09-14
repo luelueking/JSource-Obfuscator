@@ -1,7 +1,5 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import org.vidar.utils.NameUtils;
-import org.vidar.visitor.MethodNameChangeVisitor;
 
 import java.io.File;
 import java.io.FileNotFoundException;

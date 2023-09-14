@@ -16,17 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.utils;
+package org.vidar.entity.operators;
 
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
-import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.UnaryExpr;
 
-public class StatementUtils {
-    public static Statement findParentBlock(Node node) {
-        if (!node.getParentNode().isPresent() || node.getParentNode().get() instanceof NodeWithStatements) {
-            return (Statement) node;
-        }
-        return findParentBlock(node.getParentNode().get());
+public class NotOperator extends AbstractOperator {
+    @Override
+    public double getStrength() {
+        return 0.3D;
+    }
+
+    @Override
+    public int doRound(int value, int... constants) {
+        return ~value;
+    }
+
+    @Override
+    protected Expression generateExpr(SimpleName variable, Expression... constants) {
+        return new UnaryExpr(new NameExpr(variable), UnaryExpr.Operator.BITWISE_COMPLEMENT);
     }
 }

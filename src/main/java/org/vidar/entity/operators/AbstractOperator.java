@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry.operators;
+package org.vidar.entity.operators;
 
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.vidar.entry.Constant;
-import org.vidar.entry.Round;
+import org.vidar.entity.Constant;
+import org.vidar.entity.Round;
 
 import java.util.concurrent.ThreadLocalRandom;
 

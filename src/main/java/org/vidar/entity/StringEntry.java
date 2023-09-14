@@ -16,18 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.vidar.entry;
+package org.vidar.entity;
 
 import com.github.javaparser.ast.expr.SimpleName;
+import org.vidar.utils.NameUtil;
 
-public class Constant {
+
+public class StringEntry {
     private final SimpleName varName;
+    private String rawString;
 
-    public Constant(SimpleName varName) {
+    public StringEntry(String rawString) {
+        this(new SimpleName(NameUtil.generateLocalVariableName()), rawString);
+    }
+
+    public StringEntry(SimpleName varName, String rawString) {
         this.varName = varName;
+        this.rawString = rawString;
     }
 
     public SimpleName getVarName() {
         return varName;
+    }
+
+    public String getRawString() {
+        return rawString;
+    }
+
+    public void setRawString(String rawString) {
+        this.rawString = rawString;
     }
 }
