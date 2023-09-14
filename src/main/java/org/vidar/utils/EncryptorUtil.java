@@ -53,23 +53,30 @@ public class EncryptorUtil {
         add(new XorOperator());
     }};
 
+    /**
+     * 创建解密器
+     *
+     * @param entry StringEntry对象，包含解密后的字符串变量名和原始字符串
+     * @return 解密器的语句列表
+     */
     public static NodeList<Statement> makeDecryptor(StringEntry entry) {
         NodeList<Statement> resultStmts = new NodeList<>();
         SimpleName dataVar = new SimpleName(NameUtil.generateLocalVariableName());
         SimpleName indexVar = new SimpleName(NameUtil.generateLocalVariableName());
         SimpleName roundValueVar = new SimpleName(NameUtil.generateLocalVariableName());
 
-        // Create variable for result string
+        // 创建结果字符串变量 Create variable for result string
         resultStmts.add(new ExpressionStmt(new VariableDeclarationExpr(new VariableDeclarator(
                 StaticJavaParser.parseType("String"),
                 entry.getVarName().asString(),
                 new StringLiteralExpr("")))));
 
+        // 检查原始字符串是否为空
         if (entry.getRawString().isEmpty()) {
             return resultStmts;
         }
 
-        // Create random rounds (1 ~ 5)
+        // 创建随机轮次（1 ~ 5） Create random rounds (1 ~ 5)
         int roundCount = ThreadLocalRandom.current().nextInt(5) + 1;
         List<AbstractOperator> roundOperators = new ArrayList<>();
         double strength = 0;
@@ -83,16 +90,16 @@ public class EncryptorUtil {
         }
         Collections.shuffle(roundOperators);
 
-        // Extra constants as opaque predicate
+        // 创建常量作为不透明谓词 Extra constants as opaque predicate
         Constant idxCst = new Constant(indexVar);
 
-        // Make rounds
+        // 创建轮次列表 Make rounds
         List<Round> rounds = new ArrayList<>();
         for (AbstractOperator op : roundOperators) {
             rounds.add(op.makeRound(roundValueVar, idxCst));
         }
 
-        // Encrypte
+        // 加密 Encrypte
         char[] rawChars = entry.getRawString().toCharArray();
         int[] encResult = new int[rawChars.length];
         for (int i = 0; i < rawChars.length; i++) {
@@ -103,7 +110,7 @@ public class EncryptorUtil {
             encResult[i] = cur;
         }
 
-        // Create encrypted data array
+        // 创建加密数据数组 Create encrypted data array
         ArrayInitializerExpr arrayExpr = new ArrayInitializerExpr();
         for (int element : encResult) {
             arrayExpr.getValues().add(new IntegerLiteralExpr(String.format("0x%04X", element)));
@@ -114,7 +121,7 @@ public class EncryptorUtil {
                 arrayExpr
         ))));
 
-        // Create decryption routine
+        // 创建解密例程 Create decryption routine
         ForStmt forStmt = new ForStmt();
         BlockStmt routineBody = new BlockStmt();
         forStmt.setBody(routineBody);

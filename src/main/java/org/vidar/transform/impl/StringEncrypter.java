@@ -35,6 +35,7 @@ public class StringEncrypter implements Transformer<Void> {
     private static class StringEncryptVisitor extends VoidVisitorAdapter<Void> {
         @Override
         public void visit(ClassOrInterfaceDeclaration clz, Void arg) {
+
             List<MethodDeclaration> methods = clz.findAll(MethodDeclaration.class);
             for (MethodDeclaration method : methods) {
                 if (!method.getBody().isPresent()) {
@@ -53,10 +54,10 @@ public class StringEncrypter implements Transformer<Void> {
         }
 
         private void run(BlockStmt body) {
-            // Extract string to variable
+            // 提取字符串并替换为变量 Extract string to variable
             Map<Statement, List<StringEntry>> encStrings = extractAndReplace(body);
 
-            // Insert decryption routine
+            // 插入解密例程 Insert decryption routine
             for (Map.Entry<Statement, List<StringEntry>> entry : encStrings.entrySet()) {
                 Statement stmt = entry.getKey();
                 List<StringEntry> strEntries = entry.getValue();
@@ -68,6 +69,11 @@ public class StringEncrypter implements Transformer<Void> {
             }
         }
 
+        /**
+         * 提取字符串字面量并替换为变量。
+         * @param block 要从中提取和替换字符串的代码块语句。
+         * @return
+         */
         private Map<Statement, List<StringEntry>> extractAndReplace(BlockStmt block) {
             Map<Statement, List<StringEntry>> result = new HashMap<>();
 
