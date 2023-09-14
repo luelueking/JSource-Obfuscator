@@ -21,8 +21,8 @@ public class FileUtil {
     public static void saveModifiedFile(CompilationUnit cu, File file) {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             String print = printer.print(cu);
-            System.out.println("====================================================");
-            System.out.println(print);
+//            System.out.println("====================================================");
+//            System.out.println(print);
             fos.write(print.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();

@@ -39,13 +39,14 @@ public class Obfer {
     }
 
     public static void main(String[] args) throws IOException {
+        printLogoAndUsage();
         // 解析启动参数
         OptionParser parser = new OptionParser();
-//        parser.accepts("path").withRequiredArg().required();
-        parser.accepts("path").withOptionalArg();
+        parser.accepts("path").withRequiredArg().required();
+//        parser.accepts("path").withOptionalArg();
         OptionSet options = parser.parse(args);
 
-        String sourcePath = options.has("path") ? (String) options.valueOf("path") : "/Users/zhchen/Downloads/obf-test/src/main/java/";
+        String sourcePath = options.has("path") ? (String) options.valueOf("path") : "/Users/1ue/Downloads/obf-test/src/main/java/";
 
         // 预处理，遍历目录中的所有Java文件
         Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -76,6 +77,8 @@ public class Obfer {
             changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
         });
 
+        System.out.println("begin obfucate strings...");
+
         // 混淆字符串
         // TODO 注解中字符混淆
         Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -85,6 +88,7 @@ public class Obfer {
             FileUtil.saveModifiedFile(cu,p.toFile());
         });
 
+        System.out.println("finished!!!");
 
     }
 
@@ -121,5 +125,14 @@ public class Obfer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void printLogoAndUsage() {
+        System.out.println(" ╦╔═╗┌─┐┬ ┬┬─┐┌─┐┌─┐  ╔═╗┌┐ ┌─┐\n" +
+                " ║╚═╗│ ││ │├┬┘│  ├┤───║ ║├┴┐├┤ \n" +
+                "╚╝╚═╝└─┘└─┘┴└─└─┘└─┘  ╚═╝└─┘└  ");
+        System.out.println();
+        System.out.println("usage: --path 指定混淆的java目录");
+        System.out.println();
     }
 }
