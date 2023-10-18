@@ -1,6 +1,7 @@
 package org.vidar.transform.impl;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MethodRenamer implements Transformer<String> {
+public class MethodRenamer implements Transformer<Void> {
     HashMap<String, String> methodNameMap = new HashMap<>();
 
     @Override
-    public void transform(CompilationUnit cu, String newClzName) {
+    public void transform(CompilationUnit cu,Void arg) {
         MethodCollectorVisitor methodCollectorVisitor = new MethodCollectorVisitor();
         cu.accept(methodCollectorVisitor,null);
 
@@ -27,8 +28,9 @@ public class MethodRenamer implements Transformer<String> {
         for (MethodDeclaration m : methods) {
             String oldMethodName = m.getNameAsString();
             // 新的方法名
-            String newMethodName = NameUtil.generateMethodName(newClzName, oldMethodName);
-            methodNameMap.put(newClzName + "#" + oldMethodName, newMethodName);
+            String newMethodName = NameUtil.generateMethodName("newClzName", oldMethodName);
+//            methodNameMap.put(newClzName + "#" + oldMethodName, newMethodName);
+            methodNameMap.put(oldMethodName, newMethodName);
             cu.accept(new MethodNameChangeVisitor(), new String[]{oldMethodName, newMethodName});
         }
 
@@ -38,6 +40,7 @@ public class MethodRenamer implements Transformer<String> {
     public HashMap<String, String> getMethodNameMap() {
         return methodNameMap;
     }
+
 
     private static class MethodCollectorVisitor extends VoidVisitorAdapter<Void> {
         private List<MethodDeclaration> methods;
@@ -49,8 +52,20 @@ public class MethodRenamer implements Transformer<String> {
         @Override
         public void visit(MethodDeclaration md, Void arg) {
             super.visit(md, arg);
-            // 将方法添加到列表中
-            methods.add(md);
+            boolean isInterface = false;
+            // 获取方法所在的父节点
+            TypeDeclaration<?> parent = md.findAncestor(TypeDeclaration.class).orElse(null);
+            if (parent != null && parent.isClassOrInterfaceDeclaration()) {
+                ClassOrInterfaceDeclaration clz = (ClassOrInterfaceDeclaration) parent;
+                isInterface = clz.isInterface();
+            }
+            boolean hasOverrideAnnotation = md.getAnnotations().stream()
+                    .anyMatch(annotation -> annotation.getNameAsString().equals("Override"));
+//            System.out.println(isInterface);
+            if(!hasOverrideAnnotation && !isInterface && !md.getModifiers().contains(Modifier.staticModifier())) {
+               // 将方法添加到列表中
+                methods.add(md);
+            }
         }
 
         public List<MethodDeclaration> getMethods() {

@@ -46,7 +46,7 @@ public class Obfer {
 //        parser.accepts("path").withOptionalArg();
         OptionSet options = parser.parse(args);
 
-        String sourcePath = options.has("path") ? (String) options.valueOf("path") : "/Users/1ue/Downloads/obf-test/src/main/java/";
+        String sourcePath = options.has("path") ? (String) options.valueOf("path") : "/Users/zhchen/Downloads/chatin/XpocGUI/src/main/java";
 
         // 预处理，遍历目录中的所有Java文件
         Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -60,9 +60,6 @@ public class Obfer {
             String newClzName = NameUtil.generateClassName("1ue");
             clzRenamer.transform(cu, newClzName);
 
-            // 2.1 混淆方法名
-            methodRenamer.transform(cu, newClzName);
-
             // 3 混淆字段名
             fieldRenamer.transform(cu,newClzName);
 
@@ -73,6 +70,10 @@ public class Obfer {
 
             // 1.2 混淆类名后，需修改引用类的地方
             changeClzUsage(sourcePath, oldPkgName, oldPkgName, oldClzName, newClzName);
+
+            // 2.1 混淆方法名
+//            methodRenamer.transform(cu, newClzName);
+            changeMethodName(sourcePath);
             // 2.2 混淆方法后，需修改用到方法的地方
             changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
         });
@@ -90,6 +91,23 @@ public class Obfer {
 
         System.out.println("finished!!!");
 
+    }
+
+    private static void changeMethodName(String sourcePath) {
+        try {
+            // 遍历目录中的所有Java文件
+            Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
+
+                FileInputStream fis = FileUtil.getFileInputStream(p);
+                CompilationUnit cu = TransformUtil.getCompilationUnit(fis);
+                // 修改引用的方法
+                methodRenamer.transform(cu,null);
+                // 保存修改后的源代码
+                FileUtil.saveModifiedFile(cu, p.toFile());
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void changeClzUsage(String sourcePath, String oldPkgName, String newPkgName, String oldClzName, String newClzName) {

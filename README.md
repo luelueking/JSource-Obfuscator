@@ -30,7 +30,7 @@ java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/1ue/Downloads/obf-te
 ![截屏2023-09-14 14.37.03](images/%E6%88%AA%E5%B1%8F2023-09-14%2014.37.03.png)
 
 ```
-(base) 1ue@zhdeMacBook-Pro target % java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/zhchen/Downloads/obf-test/src/main/java
+% java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/zhchen/Downloads/obf-test/src/main/java
  ╦╔═╗┌─┐┬ ┬┬─┐┌─┐┌─┐  ╔═╗┌┐ ┌─┐
  ║╚═╗│ ││ │├┬┘│  ├┤───║ ║├┴┐├┤ 
 ╚╝╚═╝└─┘└─┘┴└─└─┘└─┘  ╚═╝└─┘└  
