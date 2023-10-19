@@ -71,12 +71,12 @@ public class Obfer {
             // 1.2 混淆类名后，需修改引用类的地方
             changeClzUsage(sourcePath, oldPkgName, oldPkgName, oldClzName, newClzName);
 
-            // 2.1 混淆方法名
-//            methodRenamer.transform(cu, newClzName);
-            changeMethodName(sourcePath);
-            // 2.2 混淆方法后，需修改用到方法的地方
-            changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
         });
+        // 2.1 混淆方法名
+//            methodRenamer.transform(cu, newClzName);
+        changeMethodName(sourcePath);
+        // 2.2 混淆方法后，需修改用到方法的地方
+        changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
 
         System.out.println("begin obfucate strings...");
 
@@ -128,6 +128,9 @@ public class Obfer {
     }
 
     private static void changeMethodUsage(String sourcePath, Map<String, String> needChange) {
+        System.out.println("the method need to Change:");
+        needChange.keySet().forEach(System.out::println);
+        System.out.println("=========================");
         try {
             // 遍历目录中的所有Java文件
             Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {

@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import org.vidar.transform.Transformer;
 import org.vidar.utils.NameUtil;
 
@@ -27,10 +28,19 @@ public class MethodRenamer implements Transformer<Void> {
 
         for (MethodDeclaration m : methods) {
             String oldMethodName = m.getNameAsString();
+            String className = "";
+            try {
+                ResolvedMethodDeclaration resolve = m.resolve();
+                className = resolve.getClassName();
+            } catch (Exception e) {
+                // ignore 这里必须忽略异常，你细品
+            }
             // 新的方法名
-            String newMethodName = NameUtil.generateMethodName("newClzName", oldMethodName);
-//            methodNameMap.put(newClzName + "#" + oldMethodName, newMethodName);
-            methodNameMap.put(oldMethodName, newMethodName);
+            String newMethodName = NameUtil.generateMethodName(className, oldMethodName);
+            String oldSign = className + "#" + oldMethodName;
+//            System.out.println("put: "+ oldSign);
+            methodNameMap.put(oldSign, newMethodName);
+//            methodNameMap.put(oldMethodName, newMethodName);
             cu.accept(new MethodNameChangeVisitor(), new String[]{oldMethodName, newMethodName});
         }
 
