@@ -35,7 +35,7 @@ java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/1ue/Downloads/obf-te
  ║╚═╗│ ││ │├┬┘│  ├┤───║ ║├┴┐├┤ 
 ╚╝╚═╝└─┘└─┘┴└─└─┘└─┘  ╚═╝└─┘└  
 
-usage: --path 指定混淆的java目录
+usage: --path 指定混淆的java目录 --obfMethod=true 开启方法名混淆
 
 begin obfucate strings...
 finished!!!
