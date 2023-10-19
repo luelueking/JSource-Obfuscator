@@ -20,9 +20,9 @@ public class MethodRenamer implements Transformer<Void> {
     HashMap<String, String> methodNameMap = new HashMap<>();
 
     @Override
-    public void transform(CompilationUnit cu,Void arg) {
+    public void transform(CompilationUnit cu, Void arg) {
         MethodCollectorVisitor methodCollectorVisitor = new MethodCollectorVisitor();
-        cu.accept(methodCollectorVisitor,null);
+        cu.accept(methodCollectorVisitor, null);
 
         List<MethodDeclaration> methods = methodCollectorVisitor.getMethods();
 
@@ -72,8 +72,8 @@ public class MethodRenamer implements Transformer<Void> {
             boolean hasOverrideAnnotation = md.getAnnotations().stream()
                     .anyMatch(annotation -> annotation.getNameAsString().equals("Override"));
 //            System.out.println(isInterface);
-            if(!hasOverrideAnnotation && !isInterface && !md.getModifiers().contains(Modifier.staticModifier())) {
-               // 将方法添加到列表中
+            if (!hasOverrideAnnotation && !isInterface && !md.getModifiers().contains(Modifier.staticModifier())) {
+                // 将方法添加到列表中
                 methods.add(md);
             }
         }
@@ -87,12 +87,13 @@ public class MethodRenamer implements Transformer<Void> {
 
         @Override
         public void visit(ConstructorDeclaration cd, String[] arg) {
+            // 遍历构造方法的方法调用
+            cd.accept(new ConstructorMethodCallVisitor(), arg);
             for (Parameter parameter : cd.getParameters()) {
                 String oldName = parameter.getName().getIdentifier();
                 String newName = NameUtil.generateLocalVariableName();
                 // 修改参数名称
                 parameter.setName(newName);
-
                 // 遍历方法内的语句
                 for (Statement statement : cd.getBody().getStatements()) {
                     statement.findAll(NameExpr.class).forEach(nameExpr -> {
@@ -158,8 +159,11 @@ public class MethodRenamer implements Transformer<Void> {
 
         @Override
         public void visit(MethodCallExpr mc, String[] arg) {
-            if (mc.getNameAsString().equals(arg[0])) {
-                mc.setName(arg[1]);
+            if (!mc.getScope().isPresent()) {
+                if (mc.getNameAsString().equals(arg[0])) {
+//                    System.out.println(arg[0] + "---->" + arg[1]);
+                    mc.setName(arg[1]);
+                }
             }
 
             // 递归处理scope中的方法调用
@@ -187,6 +191,18 @@ public class MethodRenamer implements Transformer<Void> {
             super.visit(mc, arg);
         }
 
+    }
+
+    // 构造方法里的方法调用访问
+    private static class ConstructorMethodCallVisitor extends VoidVisitorAdapter<String[]> {
+        @Override
+        public void visit(MethodCallExpr methodCallExpr, String[] arg) {
+            super.visit(methodCallExpr, arg);
+
+            if (methodCallExpr.getNameAsString().equals(arg[0])) {
+                methodCallExpr.setName(arg[1]);
+            }
+        }
     }
 }
 

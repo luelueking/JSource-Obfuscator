@@ -43,11 +43,13 @@ public class Obfer {
         // 解析启动参数
         OptionParser parser = new OptionParser();
         parser.accepts("path").withRequiredArg().required();
+        parser.accepts("obfMethod").withOptionalArg();
 //        parser.accepts("path").withOptionalArg();
         OptionSet options = parser.parse(args);
 
         String sourcePath = options.has("path") ? (String) options.valueOf("path") : "/Users/zhchen/Downloads/chatin/XpocGUI/src/main/java";
 
+        System.out.println("begin obfucate class name...");
         // 预处理，遍历目录中的所有Java文件
         Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
             FileInputStream fis = FileUtil.getFileInputStream(p);
@@ -72,11 +74,13 @@ public class Obfer {
             changeClzUsage(sourcePath, oldPkgName, oldPkgName, oldClzName, newClzName);
 
         });
-        // 2.1 混淆方法名
-//            methodRenamer.transform(cu, newClzName);
-        changeMethodName(sourcePath);
-        // 2.2 混淆方法后，需修改用到方法的地方
-        changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
+        boolean obfMethod = options.has("obfMethod") ? (boolean) options.valueOf("obfMethod") : true;
+        if (obfMethod) {
+            // 2.1 混淆方法名
+            changeMethodName(sourcePath);
+            // 2.2 混淆方法后，需修改用到方法的地方
+            changeMethodUsage(sourcePath,methodRenamer.getMethodNameMap());
+        }
 
         System.out.println("begin obfucate strings...");
 
@@ -94,6 +98,7 @@ public class Obfer {
     }
 
     private static void changeMethodName(String sourcePath) {
+        System.out.println("begin obfucate method name...");
         try {
             // 遍历目录中的所有Java文件
             Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -128,9 +133,9 @@ public class Obfer {
     }
 
     private static void changeMethodUsage(String sourcePath, Map<String, String> needChange) {
-        System.out.println("the method need to Change:");
-        needChange.keySet().forEach(System.out::println);
-        System.out.println("=========================");
+//        System.out.println("the method need to Change:");
+//        needChange.keySet().forEach(System.out::println);
+//        System.out.println("=========================");
         try {
             // 遍历目录中的所有Java文件
             Files.walk(Paths.get(sourcePath)).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
@@ -153,7 +158,7 @@ public class Obfer {
                 " ║╚═╗│ ││ │├┬┘│  ├┤───║ ║├┴┐├┤ \n" +
                 "╚╝╚═╝└─┘└─┘┴└─└─┘└─┘  ╚═╝└─┘└  ");
         System.out.println();
-        System.out.println("usage: --path 指定混淆的java目录");
+        System.out.println("usage: --path 指定混淆的java目录 --obfMethod=true 开启方法名混淆");
         System.out.println();
     }
 }

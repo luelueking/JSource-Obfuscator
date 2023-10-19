@@ -28,8 +28,8 @@ public class MethodRefRenamer implements Transformer<Map<String, String>> {
     @Override
     public void transform(CompilationUnit cu, Map<String, String> arg) {
         cu.accept(new VarClzCollectVisitor(),vartoClz);
-        System.out.println("var mapping ClzName");
-        vartoClz.forEach((key, value) -> System.out.println(key + " : " + value));
+//        System.out.println("var mapping ClzName");
+//        vartoClz.forEach((key, value) -> System.out.println(key + " : " + value));
         cu.accept(new MethodRefChangeVisitor(),new Map[]{arg,vartoClz});
     }
 
@@ -74,7 +74,7 @@ public class MethodRefRenamer implements Transformer<Map<String, String>> {
 
             if (needChange.containsKey(sign)) {
                 String s = needChange.get(sign);
-                System.out.println(sign+"------->"+s);
+//                System.out.println(sign+"------->"+s);
                 mc.setName(s);
             }
             super.visit(mc, map);
