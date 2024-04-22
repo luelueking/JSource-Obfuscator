@@ -27,7 +27,7 @@ java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/1ue/Downloads/obf-te
 
 使用JSource-Obfuscator加密如下示例代码
 
-![截屏2023-09-14 14.37.03](images/%E6%88%AA%E5%B1%8F2023-09-14%2014.37.03.png)
+![](images/001.png)
 
 ```
 % java -jar JSource-Obfuscator-1.0-SNAPSHOT.jar --path /Users/zhchen/Downloads/obf-test/src/main/java
@@ -43,10 +43,10 @@ finished!!!
 
 混淆后的代码大致如下
 
-![截屏2023-09-14 14.40.54](images/%E6%88%AA%E5%B1%8F2023-09-14%2014.40.54.png)
+![](images/002.png)
 
 并且正常运行
 
-![截屏2023-09-14 14.41.46](images/%E6%88%AA%E5%B1%8F2023-09-14%2014.41.46.png)
+![](images/003.png)
 
 
