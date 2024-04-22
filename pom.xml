@@ -24,9 +24,9 @@
 
     <properties>
         <!-- Dependencies Version -->
-        <java.parser.version>3.25.5</java.parser.version>
+        <java.parser.version>3.25.10</java.parser.version>
         <jopt.version>5.0.4</jopt.version>
-        <commons.lang.version>3.12.0</commons.lang.version>
+        <commons.lang.version>3.14.0</commons.lang.version>
         <!-- Maven Build Version -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
         <maven.resources.version>3.3.1</maven.resources.version>
