@@ -2,6 +2,7 @@ package org.vidar;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import me.n1ar4.log.LogLevel;
@@ -66,7 +67,7 @@ public class Main {
             String oldPkgName = cu.getPackageDeclaration().orElse(new PackageDeclaration()).getNameAsString();
             String newClzName = NameUtil.generateClassName();
             clzRenamer.transform(cu, newClzName);
-//            fieldRenamer.transform(cu, newClzName);
+            fieldRenamer.transform(cu, newClzName);
             String path = p.toFile().getParent();
             FileUtil.saveModifiedFile(cu, new File(path + "/" + newClzName + ".java"));
             FileUtil.deleteFile(p.toFile());
@@ -74,12 +75,12 @@ public class Main {
         });
         files.close();
 
-        boolean obfMethod = !options.has("obfMethod") ||
-                (boolean) options.valueOf("obfMethod");
-        if (obfMethod) {
-            changeMethodName(sPath);
-            changeMethodUsage(sPath, methodRenamer.getMethodNameMap());
-        }
+//        boolean obfMethod = !options.has("obfMethod") ||
+//                (boolean) options.valueOf("obfMethod");
+//        if (obfMethod) {
+//            changeMethodName(sPath);
+//            changeMethodUsage(sPath, methodRenamer.getMethodNameMap());
+//        }
 
         logger.info("start obfuscate strings");
 

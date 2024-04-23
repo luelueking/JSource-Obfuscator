@@ -27,7 +27,6 @@ public class ClzRefRenamer implements Transformer<String[]> {
 class ClassNameRenamingVisitor extends VoidVisitorAdapter<String[]> {
     @Override
     public void visit(MethodCallExpr methodCallExpr, String[] arg) {
-        System.out.println(methodCallExpr.getName().toString());
         if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof NameExpr) {
             NameExpr scopeExpr = (NameExpr) methodCallExpr.getScope().get();
             String className = scopeExpr.getNameAsString();
