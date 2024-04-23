@@ -64,9 +64,9 @@ public class Main {
             CompilationUnit cu = TransformUtil.getCompilationUnit(fis);
             String oldClzName = TransformUtil.getClzNameByPath(p);
             String oldPkgName = cu.getPackageDeclaration().orElse(new PackageDeclaration()).getNameAsString();
-            String newClzName = NameUtil.generateClassName("1ue");
+            String newClzName = NameUtil.generateClassName();
             clzRenamer.transform(cu, newClzName);
-            fieldRenamer.transform(cu, newClzName);
+//            fieldRenamer.transform(cu, newClzName);
             String path = p.toFile().getParent();
             FileUtil.saveModifiedFile(cu, new File(path + "/" + newClzName + ".java"));
             FileUtil.deleteFile(p.toFile());
@@ -131,7 +131,8 @@ public class Main {
             FileInputStream fis = FileUtil.getFileInputStream(p);
             CompilationUnit cu = TransformUtil.getCompilationUnit(fis);
             clzRefRenamer.transform(cu, new String[]{oldClzName, newClzName});
-            TransformUtil.changeImport(cu, oldPkgName + "." + oldClzName, newPkgName + "." + newClzName);
+            TransformUtil.changeImport(cu, oldPkgName + "." + oldClzName,
+                    newPkgName + "." + newClzName);
             FileUtil.saveModifiedFile(cu, p.toFile());
         });
         files.close();

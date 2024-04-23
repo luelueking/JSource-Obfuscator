@@ -64,7 +64,7 @@ public class TransformUtil {
     }
 
     public static CompilationUnit getCompilationUnit(FileInputStream fis) {
-        CompilationUnit cu = javaParser.parse(fis).getResult().get();
+        CompilationUnit cu = javaParser.parse(fis).getResult().orElse(null);
         try {
             fis.close();
         } catch (IOException e) {

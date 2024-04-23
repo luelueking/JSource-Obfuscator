@@ -11,11 +11,8 @@ public class ClzRenamer implements Transformer<String> {
         cu.accept(new VoidVisitorAdapter<String>() {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, String newClzName) {
-                // 修改类名
                 cd.setName(newClzName);
-                cd.getConstructors().forEach(constructor -> {
-                    constructor.setName(newClzName);
-                });
+                cd.getConstructors().forEach(constructor -> constructor.setName(newClzName));
                 super.visit(cd, newClzName);
             }
         },newClzName);
