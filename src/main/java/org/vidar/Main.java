@@ -75,12 +75,12 @@ public class Main {
         });
         files.close();
 
-//        boolean obfMethod = !options.has("obfMethod") ||
-//                (boolean) options.valueOf("obfMethod");
-//        if (obfMethod) {
-//            changeMethodName(sPath);
-//            changeMethodUsage(sPath, methodRenamer.getMethodNameMap());
-//        }
+        boolean obfMethod = !options.has("obfMethod") ||
+                (boolean) options.valueOf("obfMethod");
+        if (obfMethod) {
+            changeMethodName(sPath);
+            changeMethodUsage(sPath, methodRenamer.getMethodNameMap());
+        }
 
         logger.info("start obfuscate strings");
 
